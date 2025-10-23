@@ -1,0 +1,67 @@
+# ----------------------------
+# IGNORAR COSAS DEL SISTEMA
+# ----------------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# ENTORNOS VIRTUALES
+# ----------------------------
+venv/
+env/
+
+# ----------------------------
+# ARCHIVOS DE CONFIGURACIÓN PRIVADA
+# ----------------------------
+.env
+.env.*
+*.local
+*.key
+*.secret
+*.pem
+*.crt
+*.csr
+
+# ----------------------------
+# BASES DE DATOS LOCALES
+# ----------------------------
+db.sqlite3
+backend/db.sqlite3
+
+# ----------------------------
+# ARCHIVOS DE COMPILACIÓN PYTHON
+# ----------------------------
+__pycache__/
+*.py[cod]
+*.log
+
+# ----------------------------
+# MIGRACIONES COMPILADAS (no las de código)
+# ----------------------------
+*.pyc
+
+# ----------------------------
+# ARCHIVOS GENERADOS DE DJANGO
+# ----------------------------
+staticfiles/
+media/
+
+# ----------------------------
+# ARCHIVOS DE IDE/EDITOR
+# ----------------------------
+.vscode/
+.idea/
+*.iml
+
+# ----------------------------
+# FRONTEND / NODE
+# ----------------------------
+node_modules/
+dist/
+build/
+*.lock
+
+# ----------------------------
+# ARCHIVOS DE DEPLOY / DOCKER PRIVADOS
+# ----------------------------
+docker/.env.prod
