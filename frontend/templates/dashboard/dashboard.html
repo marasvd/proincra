@@ -46,33 +46,85 @@
             display: block;
         }
 
+        a.disabled {
+            color: #aaa;
+            pointer-events: none;
+            cursor: default;
+        }
+
         .logout {
             color: #eee;
             margin-top: 15px;
             display: inline-block;
+        }
+
+        h2 {
+            color: #0b3d91;
         }
     </style>
 </head>
 
 <body>
     <div class="sidebar">
-        <img src="/static/img/logo.png" alt="Logo">
+        {% load static %}
+        <img src="{% static 'img/logo.jpeg' %}" alt="Logo PROINCRA">
         <h3>{{ user.username }}</h3>
         <p>{{ user.rol.nombreModulo }}</p>
-        <a href="{% url 'logout' %}" class="logout">Cerrar sesión</a>
+        <a href="{% url 'gestion_usuarios:logout' %}" class="logout">Cerrar sesión</a>
     </div>
 
     <div class="content">
         <h2>Panel de módulos disponibles</h2>
+
+        {% if modulos %}
         {% for modulo, permisos in modulos %}
         {% if 'V' in permisos %}
         <div class="module">
-            <a href="#">{{ modulo|capfirst }}</a>
+            {% if modulo == 'beneficiarios' %}
+            <a href="{% url 'beneficiarios:lista' %}">1. Beneficiarios</a>
+
+            {% elif modulo == 'inventario' %}
+            <a href="#" class="disabled">2. Inventario (Producción)</a>
+
+            {% elif modulo == 'proyectos' %}
+            <a href="{% url 'proyectos_core:lista' %}">3. Proyectos / Control de Avances</a>
+
+            {% elif modulo == 'contabilidad' %}
+            <a href="#" class="disabled">4. Contabilidad</a>
+
+            {% elif modulo == 'auditoria' %}
+            <a href="#" class="disabled">5. Auditoría</a>
+
+            {% elif modulo == 'contratacion' %}
+            <a href="#" class="disabled">6. Contratación / Obra</a>
+
+            {% elif modulo == 'facturacion' %}
+            <a href="#" class="disabled">7. Facturación</a>
+
+            {% elif modulo == 'proveedores' %}
+            <a href="#" class="disabled">8. Proveedores</a>
+
+            {% elif modulo == 'usuarios' %}
+            <a href="#" class="disabled">9. Usuarios y Roles</a>
+
+            {% elif modulo == 'cartera' %}
+            <a href="#" class="disabled">10. Cartera</a>
+
+            {% elif modulo == 'nomina' %}
+            <a href="#" class="disabled">11. Nómina</a>
+
+            {% elif modulo == 'compras' %}
+            <a href="#" class="disabled">12. Compras</a>
+
+            {% elif modulo == 'operaciones_ti' %}
+            <a href="#" class="disabled">13. Operaciones TI / Docs</a>
+            {% endif %}
         </div>
         {% endif %}
-        {% empty %}
-        <p>No tienes permisos asignados.</p>
         {% endfor %}
+        {% else %}
+        <p>No tienes permisos asignados.</p>
+        {% endif %}
     </div>
 </body>
 

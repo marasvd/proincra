@@ -1,0 +1,14 @@
+<h2>Registrar Beneficiario</h2>
+<form method="post">
+    {% csrf_token %}
+    <input name="nombre" placeholder="Nombre" required><br>
+    <input name="cedula" placeholder="Cédula" required><br>
+    <input name="direccion" placeholder="Dirección"><br>
+    <input name="telefono" placeholder="Teléfono"><br>
+    <select name="estado">
+        <option value="pendiente">Pendiente</option>
+        <option value="en_construccion">En construcción</option>
+        <option value="terminado">Terminado</option>
+    </select><br>
+    <button type="submit">Guardar</button>
+</form>

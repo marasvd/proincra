@@ -15,22 +15,33 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 # proincra_main/urls.py
+# proincra_main/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from app.gestion_usuarios import views_auth
-from django.contrib.auth.views import LogoutView
-
+from django.views.generic import TemplateView, RedirectView
 
 urlpatterns = [
-    # Panel de administración
+    # -------------------------------------------
+    # PÁGINA PÚBLICA (inicio general del sistema)
+    # -------------------------------------------
+    path('', TemplateView.as_view(template_name='public/index.html'), name='home'),
+
+    # -------------------------------------------
+    # ADMINISTRACIÓN DE DJANGO
+    # -------------------------------------------
     path('admin/', admin.site.urls),
 
-    # Módulos del backend (apps Django)
-    path('beneficiarios/', include(('app.proyectos_core.urls', 'proyectos_core'), namespace='proyectos_core')),
+    # -------------------------------------------
+    # MÓDULOS DEL BACKEND (apps Django)
+    # -------------------------------------------
+    path('proyectos/', include(('app.proyectos_core.urls', 'proyectos_core'), namespace='proyectos_core')),
     path('usuarios/', include(('app.gestion_usuarios.urls_auth', 'gestion_usuarios'), namespace='gestion_usuarios')),
+    path('beneficiarios/', include(('app.beneficiarios_app.urls', 'beneficiarios_app'), namespace='beneficiarios')),
 
-    # Frontend global (páginas generales)
-    path('', views_auth.login_view, name='login'),
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('dashboard/', views_auth.dashboard_view, name='dashboard'),
+
+    # -------------------------------------------
+    # OPCIONAL: redirección raíz → login
+    # (Descomenta si quieres que "/" redirija al login)
+    # -------------------------------------------
+    # path('', RedirectView.as_view(pattern_name='gestion_usuarios:login', permanent=False)),
 ]

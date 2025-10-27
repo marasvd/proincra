@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Proyectos / Avances | PROINCRA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card-min {
+            min-height: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">Gestión de Proyectos / Avances</h3>
+            <a href="{% url 'proyectos_core:crear' %}" class="btn btn-primary">+ Nuevo avance</a>
+        </div>
+
+        <!-- Filtros -->
+        <form method="get" class="card p-3 mb-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Buscar</label>
+                    <input type="text" name="q" value="{{ request.GET.q }}" class="form-control"
+                        placeholder="Beneficiario, técnico, descripción">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Estado</label>
+                    <select name="estado" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="pendiente" {% if request.GET.estado == 'pendiente'%}selected{% endif %}>Pendiente</option>
+                        <option value="en_progreso" {% if request.GET.estado == 'en_progreso'%}selected{% endif %}>en progreso</option>
+                        <option value="finalizado" {% if request.GET.estado == 'finalizado'%}selected{% endif %}>finalizado</option>
+
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-outline-secondary w-100">Aplicar filtros</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="row g-4">
+            <!-- Avances registrados -->
+            <div class="col-lg-8">
+                <div class="card card-min">
+                    <div class="card-header bg-white">
+                        <strong>Avances registrados</strong>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Beneficiario</th>
+                                        <th>Porcentaje</th>
+                                        <th>Estado</th>
+                                        <th>Fecha</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for a in avances %}
+                                    <tr>
+                                        <td>{{ a.id }}</td>
+                                        <td>{{ a.beneficiario.nombre }}</td>
+                                        <td>{{ a.porcentaje_avance }}%</td>
+                                        <td>
+                                            {% if a.estado == 'pendiente' %}<span
+                                                class="badge text-bg-secondary">Pendiente</span>{% endif %}
+                                            {% if a.estado == 'en_progreso' %}<span class="badge text-bg-info">En
+                                                progreso</span>{% endif %}
+                                            {% if a.estado == 'finalizado' %}<span
+                                                class="badge text-bg-success">Finalizado</span>{% endif %}
+                                        </td>
+                                        <td>{{ a.fecha|date:"d/m/Y" }}</td>
+                                        <td class="text-end">
+                                            <a href="{% url 'proyectos_core:detalle' a.id %}"
+                                                class="btn btn-sm btn-outline-primary">Ver</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">No hay avances registrados.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proyectos recientes -->
+            <div class="col-lg-4">
+                <div class="card card-min">
+                    <div class="card-header bg-white">
+                        <strong>Proyectos recientes</strong>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for a in avances|slice:":5" %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="text-truncate" style="max-width: 70%">{{ a.beneficiario.nombre }}</span>
+                                <span class="badge text-bg-primary">{{ a.porcentaje_avance }}%</span>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item px-0">Sin registros recientes.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

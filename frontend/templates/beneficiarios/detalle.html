@@ -1,0 +1,6 @@
+<h2>{{ beneficiario.nombre }}</h2>
+<p>Cédula: {{ beneficiario.cedula }}</p>
+<p>Dirección: {{ beneficiario.direccion }}</p>
+<p>Teléfono: {{ beneficiario.telefono }}</p>
+<p>Estado: {{ beneficiario.get_estado_display }}</p>
+<a href="{% url 'beneficiarios:lista' %}">Volver</a>

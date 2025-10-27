@@ -1,0 +1,9 @@
+<h1>Gestión de Beneficiarios</h1>
+<a href="{% url 'beneficiarios:crear' %}">+ Nuevo Beneficiario</a>
+<ul>
+    {% for b in beneficiarios %}
+    <li><a href="{% url 'beneficiarios:detalle' b.id %}">{{ b.nombre }} - {{ b.estado }}</a></li>
+    {% empty %}
+    <li>No hay beneficiarios registrados.</li>
+    {% endfor %}
+</ul>

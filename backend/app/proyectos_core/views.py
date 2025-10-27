@@ -1,72 +1,34 @@
-# proyectos_core/views.py
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.http import HttpResponseForbidden
-from app.gestion_usuarios.models import Modulo
-from app.gestion_usuarios.models import Actor
-from .models import Beneficiario
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import AvanceProyecto, Evidencia
+from app.beneficiarios_app.models import Beneficiario
+from django.contrib.auth.decorators import login_required
 
-def check_perm(user, letter):
-    """Helper rápido: devuelve True si user tiene permiso en modulo 'beneficiarios'."""
-    if not user.is_authenticated:
-        return False
-    return user.has_perm_module(Modulo.BENEFICIARIOS, letter)
+def lista_avances(request):
+    avances = AvanceProyecto.objects.select_related('beneficiario').all()
+    return render(request, 'proyectos_core/lista.html', {'avances': avances})
 
-class BeneficiarioListView(LoginRequiredMixin, ListView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_list.html'
-    context_object_name = 'beneficiarios'
-    paginate_by = 20
+@login_required
+def crear_avance(request):
+    beneficiarios = Beneficiario.objects.all()
+    if request.method == 'POST':
+        beneficiario_id = request.POST.get('beneficiario')
+        porcentaje = request.POST.get('porcentaje_avance')
+        descripcion = request.POST.get('descripcion')
+        estado = request.POST.get('estado')
 
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'V'):
-            return HttpResponseForbidden("No tiene permiso para ver beneficiarios.")
-        return super().dispatch(request, *args, **kwargs)
+        beneficiario = get_object_or_404(Beneficiario, id=beneficiario_id)
+        AvanceProyecto.objects.create(
+            beneficiario=beneficiario,
+            tecnico=request.user,
+            porcentaje_avance=porcentaje,
+            descripcion=descripcion,
+            estado=estado
+        )
+        return redirect('proyectos_core:lista')
 
+    return render(request, 'proyectos_core/crear.html', {'beneficiarios': beneficiarios})
 
-class BeneficiarioDetailView(LoginRequiredMixin, DetailView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_detail.html'
-    context_object_name = 'beneficiario'
-
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'V'):
-            return HttpResponseForbidden("No tiene permiso para ver detalles.")
-        return super().dispatch(request, *args, **kwargs)
-
-
-class BeneficiarioCreateView(LoginRequiredMixin, CreateView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_form.html'
-    fields = ['nombre_beneficiario', 'documento', 'direccion', 'telefono', 'correo']
-    success_url = reverse_lazy('proyectos_core:beneficiario_list')
-
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'C'):
-            return HttpResponseForbidden("No tiene permiso para crear beneficiarios.")
-        return super().dispatch(request, *args, **kwargs)
-
-
-class BeneficiarioUpdateView(LoginRequiredMixin, UpdateView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_form.html'
-    fields = ['nombre_beneficiario', 'documento', 'direccion', 'telefono', 'correo']
-    success_url = reverse_lazy('proyectos_core:beneficiario_list')
-
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'E'):
-            return HttpResponseForbidden("No tiene permiso para editar beneficiarios.")
-        return super().dispatch(request, *args, **kwargs)
-
-
-class BeneficiarioDeleteView(LoginRequiredMixin, DeleteView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_confirm_delete.html'
-    success_url = reverse_lazy('proyectos_core:beneficiario_list')
-
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'D'):
-            return HttpResponseForbidden("No tiene permiso para eliminar beneficiarios.")
-        return super().dispatch(request, *args, **kwargs)
-
+def detalle_avance(request, id):
+    avance = get_object_or_404(AvanceProyecto, id=id)
+    evidencias = Evidencia.objects.filter(avance=avance)
+    return render(request, 'proyectos_core/detalle.html', {'avance': avance, 'evidencias': evidencias})

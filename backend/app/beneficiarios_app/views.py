@@ -1,70 +1,29 @@
-# proyectos_core/views.py
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.shortcuts import HttpResponseForbidden
-from gestion_usuarios.models import Modulo
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Beneficiario
+from .forms import BeneficiarioForm
 
-def check_perm(user, letter):
-    """Helper rápido: devuelve True si user tiene permiso en modulo 'beneficiarios'."""
-    if not user.is_authenticated:
-        return False
-    return user.has_perm_module(Modulo.BENEFICIARIOS, letter)
+def lista_beneficiarios(request):
+    estado = request.GET.get('estado')
+    query = request.GET.get('q')
+    beneficiarios = Beneficiario.objects.all()
 
-class BeneficiarioListView(LoginRequiredMixin, ListView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_list.html'
-    context_object_name = 'beneficiarios'
-    paginate_by = 20
+    if estado:
+        beneficiarios = beneficiarios.filter(estado=estado)
+    if query:
+        beneficiarios = beneficiarios.filter(nombre__icontains=query)
 
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'V'):
-            return HttpResponseForbidden("No tiene permiso para ver beneficiarios.")
-        return super().dispatch(request, *args, **kwargs)
+    return render(request, 'beneficiarios/lista.html', {'beneficiarios': beneficiarios})
 
+def crear_beneficiario(request):
+    if request.method == 'POST':
+        form = BeneficiarioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('beneficiarios:lista')
+    else:
+        form = BeneficiarioForm()
+    return render(request, 'beneficiarios/formulario.html', {'form': form})
 
-class BeneficiarioDetailView(LoginRequiredMixin, DetailView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_detail.html'
-    context_object_name = 'beneficiario'
-
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'V'):
-            return HttpResponseForbidden("No tiene permiso para ver detalles.")
-        return super().dispatch(request, *args, **kwargs)
-
-
-class BeneficiarioCreateView(LoginRequiredMixin, CreateView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_form.html'
-    fields = ['nombre_beneficiario', 'documento', 'direccion', 'telefono', 'correo']
-    success_url = reverse_lazy('proyectos_core:beneficiario_list')
-
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'C'):
-            return HttpResponseForbidden("No tiene permiso para crear beneficiarios.")
-        return super().dispatch(request, *args, **kwargs)
-
-
-class BeneficiarioUpdateView(LoginRequiredMixin, UpdateView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_form.html'
-    fields = ['nombre_beneficiario', 'documento', 'direccion', 'telefono', 'correo']
-    success_url = reverse_lazy('proyectos_core:beneficiario_list')
-
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'E'):
-            return HttpResponseForbidden("No tiene permiso para editar beneficiarios.")
-        return super().dispatch(request, *args, **kwargs)
-
-
-class BeneficiarioDeleteView(LoginRequiredMixin, DeleteView):
-    model = Beneficiario
-    template_name = 'proyectos_core/beneficiario_confirm_delete.html'
-    success_url = reverse_lazy('proyectos_core:beneficiario_list')
-
-    def dispatch(self, request, *args, **kwargs):
-        if not check_perm(request.user, 'D'):
-            return HttpResponseForbidden("No tiene permiso para eliminar beneficiarios.")
-        return super().dispatch(request, *args, **kwargs)
+def detalle_beneficiario(request, id):
+    beneficiario = get_object_or_404(Beneficiario, id=id)
+    return render(request, 'beneficiarios/detalle.html', {'beneficiario': beneficiario})

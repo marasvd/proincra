@@ -1,39 +1,38 @@
-# proyectos_core/models.py
+# backend/app/proyectos_core/models.py
 from django.db import models
-
-class Beneficiario(models.Model):
-    nombre_beneficiario = models.CharField(max_length=255)
-    documento = models.CharField(max_length=100, unique=True)
-    direccion = models.CharField(max_length=255, blank=True, null=True)
-    telefono = models.CharField(max_length=50, blank=True, null=True)
-    correo = models.EmailField(blank=True, null=True)
-    fecha_registro = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Beneficiario"
-        verbose_name_plural = "Beneficiarios"
-        ordering = ['-fecha_registro']
-
-    def __str__(self):
-        return f"{self.nombre_beneficiario} — {self.documento}"
+from app.beneficiarios_app.models import Beneficiario
+from django.conf import settings
 
 
-class Avance(models.Model):
-    gestion = models.ForeignKey(
-        Beneficiario,
-        on_delete=models.CASCADE,
-        related_name='avances',
-        db_column='gestion_id',
-        verbose_name='Beneficiario (gestion_id)'
-    )
-    descripcion = models.TextField()
-    estado = models.CharField(max_length=100)  # considera usar Choices en producción
-    fecha_avance = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        verbose_name = "Avance"
-        verbose_name_plural = "Avances"
-        ordering = ['-fecha_avance']
+class AvanceProyecto(models.Model):
+    ESTADOS = [
+        ('pendiente', 'Pendiente'),
+        ('en_progreso', 'En progreso'),
+        ('finalizado', 'Finalizado'),
+    ]
+
+    beneficiario = models.ForeignKey(Beneficiario, on_delete=models.CASCADE, related_name='avances')
+    tecnico = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='avances_registrados'
+)
+
+    fecha = models.DateField(auto_now_add=True)
+    porcentaje_avance = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    descripcion = models.TextField(blank=True)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
 
     def __str__(self):
-        return f"Avance {self.pk} — {self.gestion.documento} — {self.estado}"
+        return f"Avance {self.id} - {self.beneficiario.nombre}"
+class Evidencia(models.Model):
+    avance = models.ForeignKey(AvanceProyecto, on_delete=models.CASCADE, related_name='evidencias')
+    imagen = models.ImageField(upload_to='evidencias/', blank=True, null=True)
+    coordenadas_gps = models.CharField(max_length=100, blank=True, null=True)
+    fecha_subida = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Evidencia {self.id} del avance {self.avance.id}"
