@@ -37,7 +37,8 @@ urlpatterns = [
     path('proyectos/', include(('app.proyectos_core.urls', 'proyectos_core'), namespace='proyectos_core')),
     path('usuarios/', include(('app.gestion_usuarios.urls_auth', 'gestion_usuarios'), namespace='gestion_usuarios')),
     path('beneficiarios/', include(('app.beneficiarios_app.urls', 'beneficiarios_app'), namespace='beneficiarios')),
-
+    path('inventario/', include(('app.inventario_app.urls', 'inventario'), namespace='inventario')),
+    path('proveedores/', include(('app.proveedores_app.urls', 'proveedores_app'), namespace='proveedores_app')),
 
     # -------------------------------------------
     # OPCIONAL: redirección raíz → login
