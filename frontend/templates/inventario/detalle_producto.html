@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Detalle de Producto</title>
+</head>
+
+<body>
+    <a href="{% url 'inventario:lista' %}">Volver</a>
+    <h2>{{ producto.nombre }}</h2>
+    <p>Stock actual: {{ producto.stock }} {{ producto.get_unidad_medida_display }}</p>
+    <p>Estado: {% if producto.en_bajo_stock %}Bajo stock{% else %}Disponible{% endif %}</p>
+
+    <h3>Información</h3>
+    <p>{{ producto.descripcion }}</p>
+    <p>Categoría: {{ producto.categoria.nombre }}</p>
+    <p>Unidad: {{ producto.get_unidad_medida_display }}</p>
+
+    <h3>Historial de Movimientos</h3>
+    <h4>Entradas</h4>
+    <ul>
+        {% for e in entradas %}
+        <li>+{{ e.cantidad }} — {{ e.fecha|date:"d/m/Y H:i" }} — {{ e.proveedor }}</li>
+        {% empty %}
+        <li>Sin entradas recientes.</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Salidas</h4>
+    <ul>
+        {% for s in salidas %}
+        <li>-{{ s.cantidad }} — {{ s.fecha|date:"d/m/Y H:i" }} — {{ s.destino }}</li>
+        {% empty %}
+        <li>Sin salidas recientes.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

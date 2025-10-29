@@ -84,7 +84,7 @@
             <a href="{% url 'beneficiarios:lista' %}">1. Beneficiarios</a>
 
             {% elif modulo == 'inventario' %}
-            <a href="#" class="disabled">2. Inventario (Producción)</a>
+            <a href="{% url 'inventario:lista' %}">2. inventario / produccion</a>
 
             {% elif modulo == 'proyectos' %}
             <a href="{% url 'proyectos_core:lista' %}">3. Proyectos / Control de Avances</a>
@@ -102,7 +102,7 @@
             <a href="#" class="disabled">7. Facturación</a>
 
             {% elif modulo == 'proveedores' %}
-            <a href="#" class="disabled">8. Proveedores</a>
+            <a href="{% url 'proveedores_app:lista' %}">8. Proveedores</a>
 
             {% elif modulo == 'usuarios' %}
             <a href="#" class="disabled">9. Usuarios y Roles</a>

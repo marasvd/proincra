@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Gestión de Inventario</title>
+</head>
+
+<body>
+    <h1>Gestión de Inventario</h1>
+
+    <div>
+        <a href="{% url 'inventario:entrada' %}">Registrar Entrada</a>
+        <a href="{% url 'inventario:salida' %}">Registrar Salida</a>
+        <a href="{% url 'inventario:resumen' %}">Consultar Valor del Inventario</a>
+    </div>
+
+    <h3>Filtros</h3>
+    <form method="get">
+        {{ form.q.label_tag }} {{ form.q }}
+        {{ form.estado.label_tag }} {{ form.estado }}
+        {{ form.tipo.label_tag }} {{ form.tipo }}
+        <button type="submit">Aplicar Filtros</button>
+    </form>
+
+    <h3>Inventario General</h3>
+    <p>Total Productos: {{ total_productos }}</p>
+    <p>Valor Total: $ {{ total_valor }}</p>
+
+    <h3>Listado de Productos</h3>
+    <ul>
+        {% for p in productos %}
+        <li>
+            <a href="{% url 'inventario:detalle' p.id %}">{{ p.nombre }}</a>
+            — {{ p.categoria.nombre }} — Stock: {{ p.stock }} {{ p.get_unidad_medida_display }}
+            {% if p.en_bajo_stock %}<strong style="color:red;"> (Bajo stock)</strong>{% endif %}
+        </li>
+        {% empty %}
+        <li>Sin productos.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

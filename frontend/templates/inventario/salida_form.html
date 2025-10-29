@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Registrar Salida</title>
+</head>
+
+<body>
+    <h2>Registrar Salida de Inventario</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar salida</button>
+        <a href="{% url 'inventario:lista' %}">Cancelar</a>
+    </form>
+</body>
+
+</html>
