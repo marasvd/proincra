@@ -80,44 +80,52 @@
         {% for modulo, permisos in modulos %}
         {% if 'V' in permisos %}
         <div class="module">
+
             {% if modulo == 'beneficiarios' %}
-            <a href="{% url 'beneficiarios:lista' %}">1. Beneficiarios</a>
+            <a href="{% url 'beneficiarios:lista' %}"> Beneficiarios</a>
 
             {% elif modulo == 'inventario' %}
-            <a href="{% url 'inventario:lista' %}">2. inventario / produccion</a>
+            <a href="{% url 'inventario:lista' %}"> inventario / produccion</a>
 
             {% elif modulo == 'proyectos' %}
-            <a href="{% url 'proyectos_core:lista' %}">3. Proyectos / Control de Avances</a>
+            <a href="{% url 'proyectos_core:lista' %}"> Proyectos / Control de Avances</a>
 
             {% elif modulo == 'contabilidad' %}
-            <a href="#" class="disabled">4. Contabilidad</a>
+            <a href="#" class="disabled"> Contabilidad</a>
 
             {% elif modulo == 'auditoria' %}
-            <a href="#" class="disabled">5. Auditoría</a>
+            <a href="#" class="disabled"> Auditoría</a>
 
             {% elif modulo == 'contratacion' %}
-            <a href="#" class="disabled">6. Contratación / Obra</a>
+            <a href="#" class="disabled"> Contratación / Obra</a>
 
             {% elif modulo == 'facturacion' %}
-            <a href="#" class="disabled">7. Facturación</a>
+            <a href="#" class="disabled"> Facturación</a>
+
+            {% elif modulo == 'productos' %}
+            <a href="{% url 'productos_app:lista' %}"> productos</a>
 
             {% elif modulo == 'proveedores' %}
-            <a href="{% url 'proveedores_app:lista' %}">8. Proveedores</a>
+            <a href="{% url 'proveedores_app:lista' %}"> Proveedores</a>
 
             {% elif modulo == 'usuarios' %}
-            <a href="#" class="disabled">9. Usuarios y Roles</a>
+            <a href="#" class="disabled"> Usuarios y Roles</a>
 
             {% elif modulo == 'cartera' %}
-            <a href="#" class="disabled">10. Cartera</a>
+            <a href="#" class="disabled"> Cartera</a>
 
             {% elif modulo == 'nomina' %}
-            <a href="#" class="disabled">11. Nómina</a>
+            <a href="#" class="disabled"> Nómina</a>
 
             {% elif modulo == 'compras' %}
-            <a href="#" class="disabled">12. Compras</a>
+            <a href="#" class="disabled"> Compras</a>
 
             {% elif modulo == 'operaciones_ti' %}
-            <a href="#" class="disabled">13. Operaciones TI / Docs</a>
+            <a href="#" class="disabled"> Operaciones TI / Docs</a>
+
+            {% elif modulo == 'tesoreria' %}
+            <a href="#" class="disabled"> Tesorería</a>
+
             {% endif %}
         </div>
         {% endif %}

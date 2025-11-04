@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'app.nomina_app',
     'app.compras_app',
     'app.operaciones_ti_app',
-    'app.tesoreria_app', 
+    'app.tesoreria_app',
+    'app.productos_app', 
 ]
 
 MIDDLEWARE = [

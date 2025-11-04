@@ -20,7 +20,8 @@ class Command(BaseCommand):
                 Modulo.NOMINA: "V",
                 Modulo.COMPRAS: "V",
                 Modulo.OPERACIONES_TI: "VU",
-                Modulo.TESORERIA: "V", 
+                Modulo.TESORERIA: "V",
+                Modulo.PRODUCTOS: "VCED",  # ✅ nuevo módulo
             },
             "Almacenista": {
                 Modulo.BENEFICIARIOS: "V",
@@ -36,6 +37,7 @@ class Command(BaseCommand):
                 Modulo.NOMINA: "V",
                 Modulo.COMPRAS: "CR",
                 Modulo.OPERACIONES_TI: "V",
+                Modulo.PRODUCTOS: "VCED", 
             },
             "Técnico de Campo": {
                 Modulo.BENEFICIARIOS: "CV",
@@ -51,6 +53,7 @@ class Command(BaseCommand):
                 Modulo.NOMINA: "V",
                 Modulo.COMPRAS: "R",
                 Modulo.OPERACIONES_TI: "S",
+                Modulo.PRODUCTOS: "V",
             },
             "Contabilidad / Tesorería": {
                 Modulo.CONTABILIDAD: "VCPX",
@@ -58,6 +61,7 @@ class Command(BaseCommand):
                 Modulo.CARTERA: "V",
                 Modulo.FACTURACION: "R",
                 Modulo.NOMINA: "P",
+                Modulo.PRODUCTOS: "V",  # ✅ solo lectura
             },
         }
 

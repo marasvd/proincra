@@ -2,39 +2,120 @@
 <html lang="es">
 
 <head>
-    <meta charset="utf-8">
-    <title>Detalle de Producto</title>
+    <meta charset="UTF-8">
+    <title>Detalle de Producto - Inventario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <a href="{% url 'inventario:lista' %}">Volver</a>
-    <h2>{{ producto.nombre }}</h2>
-    <p>Stock actual: {{ producto.stock }} {{ producto.get_unidad_medida_display }}</p>
-    <p>Estado: {% if producto.en_bajo_stock %}Bajo stock{% else %}Disponible{% endif %}</p>
+<body class="bg-light">
+    <div class="container mt-5 mb-5">
 
-    <h3>Información</h3>
-    <p>{{ producto.descripcion }}</p>
-    <p>Categoría: {{ producto.categoria.nombre }}</p>
-    <p>Unidad: {{ producto.get_unidad_medida_display }}</p>
+        <!-- Encabezado -->
+        <div class="text-center mb-4">
+            <h3 class="fw-bold">Detalle del Producto</h3>
+            <p class="text-muted">Consulta las últimas entradas y salidas registradas.</p>
+            <div class="mt-3">
+                <a href="{% url 'inventario:lista' %}" class="btn btn-outline-primary px-4">Volver al Inventario</a>
+            </div>
+        </div>
 
-    <h3>Historial de Movimientos</h3>
-    <h4>Entradas</h4>
-    <ul>
-        {% for e in entradas %}
-        <li>+{{ e.cantidad }} — {{ e.fecha|date:"d/m/Y H:i" }} — {{ e.proveedor }}</li>
-        {% empty %}
-        <li>Sin entradas recientes.</li>
-        {% endfor %}
-    </ul>
+        <!-- Ficha del producto -->
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-body">
+                <h4 class="fw-bold text-center text-primary mb-3">{{ producto.nombre }}</h4>
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <p class="fw-semibold text-muted mb-0">Categoría</p>
+                        <p>{{ producto.categoria }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="fw-semibold text-muted mb-0">Precio Unitario</p>
+                        <p>${{ producto.precio_unitario }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="fw-semibold text-muted mb-0">Stock Actual</p>
+                        <p>{{ producto.stock }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="fw-semibold text-muted mb-0">Stock Mínimo</p>
+                        <p>{{ producto.stock_minimo }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <h4>Salidas</h4>
-    <ul>
-        {% for s in salidas %}
-        <li>-{{ s.cantidad }} — {{ s.fecha|date:"d/m/Y H:i" }} — {{ s.destino }}</li>
-        {% empty %}
-        <li>Sin salidas recientes.</li>
-        {% endfor %}
-    </ul>
+        <!-- Entradas recientes -->
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-body">
+                <h5 class="fw-bold text-success mb-3">📦 Entradas recientes</h5>
+                {% if entradas %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle table-hover">
+                        <thead class="table-success">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cantidad</th>
+                                <th>Proveedor</th>
+                                <th>Responsable</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in entradas %}
+                            <tr>
+                                <td>{{ e.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ e.cantidad }}</td>
+                                <td>{{ e.proveedor }}</td>
+                                <td>{{ e.responsable.username }}</td>
+                                <td>{{ e.observaciones|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">No hay entradas registradas para este producto.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Salidas recientes -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="fw-bold text-danger mb-3">🚚 Salidas recientes</h5>
+                {% if salidas %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle table-hover">
+                        <thead class="table-danger">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cantidad</th>
+                                <th>Destino</th>
+                                <th>Responsable</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in salidas %}
+                            <tr>
+                                <td>{{ s.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ s.cantidad }}</td>
+                                <td>{{ s.destino|default:"—" }}</td>
+                                <td>{{ s.responsable.username }}</td>
+                                <td>{{ s.observaciones|default:"—" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">No hay salidas registradas para este producto.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

@@ -100,20 +100,22 @@ class Actor(AbstractUser):
 
 
 class Modulo(models.TextChoices):
-    BENEFICIARIOS = 'beneficiarios', '1 Beneficiarios'
-    INVENTARIO = 'inventario', '2 Inventario (Producción)'
-    PROYECTOS = 'proyectos', '3 Proyectos / Avance'
-    CONTABILIDAD = 'contabilidad', '4 Contabilidad'
-    AUDITORIA = 'auditoria', '5 Auditoría'
-    CONTRATACION = 'contratacion', '6 Contratación / Obra'
-    FACTURACION = 'facturacion', '7 Facturación'
-    PROVEEDORES = 'proveedores', '8 Proveedores'
-    USUARIOS = 'usuarios', '9 Usuarios y Roles'
-    CARTERA = 'cartera', '10 Cartera'
-    NOMINA = 'nomina', '11 Nómina'
-    COMPRAS = 'compras', '12 Compras'
-    OPERACIONES_TI = 'operaciones_ti', '13 Operaciones TI / Docs'
-    TESORERIA = 'tesoreria', '14 Tesorería'
+    BENEFICIARIOS = 'beneficiarios', ' Beneficiarios'
+    INVENTARIO = 'inventario', ' Inventario (Producción)'
+    PROYECTOS = 'proyectos', ' Proyectos / Avance'
+    CONTABILIDAD = 'contabilidad', ' Contabilidad'
+    AUDITORIA = 'auditoria', ' Auditoría'
+    CONTRATACION = 'contratacion', ' Contratación / Obra'
+    FACTURACION = 'facturacion', ' Facturación'
+    PROVEEDORES = 'proveedores', ' Proveedores'
+    USUARIOS = 'usuarios', ' Usuarios y Roles'
+    CARTERA = 'cartera', ' Cartera'
+    NOMINA = 'nomina', ' Nómina'
+    COMPRAS = 'compras', ' Compras'
+    OPERACIONES_TI = 'operaciones_ti', ' Operaciones TI / Docs'
+    TESORERIA = 'tesoreria', ' Tesorería'
+    PRODUCTOS = 'productos', 'Productos'
+
 
 
 
@@ -130,14 +132,16 @@ class RolModuloPermisos(models.Model):
     sincronizar = models.BooleanField(default=False)     # S
     gestionar_usuarios = models.BooleanField(default=False)  # U
     exportar = models.BooleanField(default=False)        # X
+    permisos = models.CharField(max_length=10, default='V')
+
+
+    def __str__(self):
+        return f"{self.rol.nombreModulo} - {self.modulo} ({self.permisos})"
 
     class Meta:
         unique_together = ('rol', 'modulo')
         verbose_name = "Permisos por Rol y Módulo"
         verbose_name_plural = "Permisos por Roles y Módulos"
-
-    def __str__(self):
-        return f"{self.rol.nombreModulo} @ {self.get_modulo_display()}"
 
     def set_from_letters(self, letters: str):
         """

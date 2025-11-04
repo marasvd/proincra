@@ -1,94 +1,114 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <title>Iniciar sesión - PROINCRA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: url("{% static 'img/fondo_construccion.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
             height: 100vh;
-            margin: 0;
-        }
-
-        .container {
             display: flex;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 800px;
-            max-width: 90%;
-        }
-
-        .left {
-            background: #0b3d91;
-            color: white;
-            padding: 40px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            flex-direction: column;
-            width: 40%;
+            align-items: center;
+            font-family: "Segoe UI", Arial, sans-serif;
         }
 
-        .left h1 {
-            font-size: 2em;
-        }
-
-        .right {
-            padding: 40px;
-            width: 60%;
-        }
-
-        input {
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
+            height: 100%;
+            background: rgba(0, 33, 89, 0.55);
+            /* filtro azul suave */
+            z-index: 0;
         }
 
-        button {
-            background: #0b3d91;
+        .login-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.10);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            width: 400px;
             color: white;
-            padding: 10px 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-container h2 {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.2);
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
+            color: #fff;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: none;
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #0b3d91;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #1253c9;
         }
 
         .error {
-            color: red;
+            color: #ff8080;
+            font-size: 0.9em;
             margin-bottom: 10px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="left">
-            {% load static %}
-            <img src="{% static 'img/logo.jpeg' %}" alt="Logo PROINCRA">
-            <h1>Iniciar sesión</h1>
-        </div>
-        <div class="right">
-            <h2>Bienvenido a PROINCRA</h2>
-            {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    <div class="overlay"></div>
 
-            <form method="post" action="{% url 'gestion_usuarios:login' %}">
-                {% csrf_token %}
-                <input type="text" name="username" placeholder="Usuario" required>
-                <input type="password" name="password" placeholder="Contraseña" required>
-                <button type="submit">Entrar</button>
-            </form>
-        </div>
+    <div class="login-container">
+        <h2>Bienvenido a PROINCRA</h2>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="post" action="{% url 'gestion_usuarios:login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" name="username" class="form-control" placeholder="Usuario" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Contraseña" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        </form>
+
+        <p class="mt-3 small">¿No tienes una cuenta?
+            <a href="{% url 'gestion_usuarios:signup' %}" class="text-white fw-bold text-decoration-none">Regístrate</a>
+        </p>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
