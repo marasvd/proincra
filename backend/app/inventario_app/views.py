@@ -3,10 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum, F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .models import Producto, EntradaInventario, SalidaInventario
 from .forms import FiltroProductoForm, EntradaForm, SalidaForm
 from app.proveedores_app.models import Proveedor
-
+from .models import EntradaInventario, SalidaInventario
+from app.productos_app.models import Producto
 
 # ===========================
 # LISTADO DE PRODUCTOS
@@ -14,7 +14,8 @@ from app.proveedores_app.models import Proveedor
 @login_required
 def lista_view(request):
     form = FiltroProductoForm(request.GET or None)
-    productos = Producto.objects.select_related('categoria').all()
+    productos = Producto.objects.all()
+
 
     if form.is_valid():
         q = form.cleaned_data.get('q') or ''
@@ -46,30 +47,22 @@ def lista_view(request):
 # ===========================
 # REGISTRAR ENTRADA (actualizado con proveedor)
 # ===========================
+# ===========================
+# REGISTRAR ENTRADA (corregido y funcional)
+# ===========================
 @login_required
 def entrada_view(request):
-    proveedores = Proveedor.objects.all()
-
     if request.method == 'POST':
         form = EntradaForm(request.POST)
         if form.is_valid():
             entrada = form.save(commit=False)
             entrada.responsable = request.user
-
-            # Relacionar proveedor (si fue seleccionado)
-            proveedor_id = request.POST.get('proveedor')
-            if proveedor_id:
-                entrada.proveedor = Proveedor.objects.get(pk=proveedor_id)
-
             entrada.save()
-            return redirect('inventario:detalle', pk=entrada.producto_id)
+            return redirect('inventario:detalle', pk=entrada.producto.pk)
     else:
         form = EntradaForm()
 
-    return render(request, 'inventario/entrada_form.html', {
-        'form': form,
-        'proveedores': proveedores
-    })
+    return render(request, 'inventario/entrada_form.html', {'form': form})
 
 
 # ===========================

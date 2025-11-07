@@ -1,6 +1,7 @@
 from django import forms
-from .models import EntradaInventario, SalidaInventario, Producto
+from .models import EntradaInventario, SalidaInventario
 from app.productos_app.models import Producto
+from app.proveedores_app.models import Proveedor
 
 class FiltroProductoForm(forms.Form):
     q = forms.CharField(label="Buscar", required=False)
@@ -14,6 +15,18 @@ class FiltroProductoForm(forms.Form):
     )
 
 class EntradaForm(forms.ModelForm):
+    producto = forms.ModelChoiceField(
+        queryset=Producto.objects.all(),
+        label="Producto",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    proveedor = forms.ModelChoiceField(
+        queryset=Proveedor.objects.all(),
+        label="Proveedor",
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
     class Meta:
         model = EntradaInventario
         fields = ['producto', 'proveedor', 'cantidad', 'observaciones']

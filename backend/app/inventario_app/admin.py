@@ -1,24 +1,17 @@
 from django.contrib import admin
-from .models import Categoria, Producto, EntradaInventario, SalidaInventario
+from .models import EntradaInventario, SalidaInventario
 
-@admin.register(Categoria)
-class CategoriaAdmin(admin.ModelAdmin):
-    search_fields = ['nombre']
 
-@admin.register(Producto)
-class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'categoria', 'unidad_medida', 'stock', 'stock_minimo', 'precio_unitario', 'activo')
-    list_filter = ('categoria', 'unidad_medida', 'activo')
-    search_fields = ('nombre', 'descripcion')
-
+# Registramos solo los modelos que realmente existen
 @admin.register(EntradaInventario)
-class EntradaAdmin(admin.ModelAdmin):
-    list_display = ('producto', 'cantidad', 'responsable', 'fecha', 'proveedor')
-    list_filter = ('fecha', 'responsable')
-    search_fields = ('producto__nombre', 'proveedor', 'observaciones')
+class EntradaInventarioAdmin(admin.ModelAdmin):
+    list_display = ('producto', 'cantidad', 'proveedor', 'fecha', 'responsable')
+    search_fields = ('producto__nombre', 'proveedor__nombre')
+    list_filter = ('fecha', 'proveedor')
+
 
 @admin.register(SalidaInventario)
-class SalidaAdmin(admin.ModelAdmin):
-    list_display = ('producto', 'cantidad', 'responsable', 'fecha', 'destino')
-    list_filter = ('fecha', 'responsable')
-    search_fields = ('producto__nombre', 'destino', 'observaciones')
+class SalidaInventarioAdmin(admin.ModelAdmin):
+    list_display = ('producto', 'cantidad', 'destino', 'fecha', 'responsable')
+    search_fields = ('producto__nombre', 'destino')
+    list_filter = ('fecha',)

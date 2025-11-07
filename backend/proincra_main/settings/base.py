@@ -27,6 +27,8 @@ INSTALLED_APPS = [
 
     # Terceros
     'rest_framework',
+    'widget_tweaks',
+
 
     # Apps del proyecto
     'app.gestion_usuarios',   # Usuarios y roles (MVP)

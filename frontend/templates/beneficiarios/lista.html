@@ -1,9 +1,140 @@
-<h1>Gestión de Beneficiarios</h1>
-<a href="{% url 'beneficiarios:crear' %}">+ Nuevo Beneficiario</a>
-<ul>
-    {% for b in beneficiarios %}
-    <li><a href="{% url 'beneficiarios:detalle' b.id %}">{{ b.nombre }} - {{ b.estado }}</a></li>
-    {% empty %}
-    <li>No hay beneficiarios registrados.</li>
-    {% endfor %}
-</ul>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Beneficiarios</title>
+
+    <!-- Bootstrap 5.3.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f9f9f9;
+            font-family: "Segoe UI", sans-serif;
+        }
+        h2, h5 {
+            color: #000;
+        }
+        .btn-dark {
+            background-color: #000;
+            border: none;
+        }
+        .btn-dark:hover {
+            background-color: #333;
+        }
+        .list-group-item:hover {
+            background-color: #f3f3f3;
+        }
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container py-5">
+
+    <!-- Título principal -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Gestión de Beneficiarios</h2>
+        <a href="{% url 'beneficiarios:crear' %}" class="btn btn-dark mt-3">
+            + Nuevo Beneficiario
+        </a>
+    </div>
+
+
+    <!-- Filtro Beneficiarios -->
+<section class="mb-5">
+    <h4 class="fw-semibold mb-3">Filtrar Beneficiarios</h4>
+    <form method="get" class="d-flex align-items-center gap-2">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o cédula" value="{{ request.GET.q }}">
+            <button class="btn btn-dark" type="submit">
+        <i class="bi bi-search"></i>
+            </button>
+    </div>
+    </form>
+</section>
+
+<a href="{% url 'gestion_usuarios:dashboard' %}" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
+    <i class="bi bi-speedometer2 me-2"></i> Ir al Dashboard Principal
+</a>
+
+    <!-- Lista de beneficiarios -->
+<!-- Lista de beneficiarios -->
+<section class="my-5">
+    <h5 class="fw-semibold mb-3">Lista de Beneficiarios</h5>
+
+    <div class="list-group shadow-sm">
+        {% for b in beneficiarios %}
+        <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+
+            <a href="{% url 'beneficiarios:detalle' b.id %}" class="d-flex align-items-center gap-3 text-decoration-none text-dark">
+                <div class="rounded-circle bg-light border text-center" style="width:35px; height:35px; line-height:33px;">
+                    {{ forloop.counter }}
+                </div>
+                <div>
+                    <h6 class="mb-0">{{ b.nombre }}</h6>
+                </div>
+            </a>
+            <form method="get" class="d-flex mb-3">
+</form>
+
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">UPAF {{ b.id|default:"--" }}</span>
+                
+
+                <!-- Botón Eliminar -->
+                <button class="btn btn-outline-danger btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#eliminarModal{{ b.id }}">
+                    <i class="bi bi-trash"></i>
+                </button>
+
+                <a href="{% url 'beneficiarios:detalle' b.id %}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-eye"></i> Ver detalles
+    </a>
+            </div>
+        </div>
+
+        {% empty %}
+        <p class="text-muted text-center my-4">No hay beneficiarios registrados.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!--lo de anbajo -->
+{% for b in beneficiarios %}
+<div class="modal fade" id="eliminarModal{{ b.id }}" tabindex="-1" aria-labelledby="eliminarModalLabel{{ b.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-sm">
+            <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="eliminarModalLabel{{ b.id }}">Confirmar eliminación</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+    </div>
+<div class="modal-body">
+        <p>¿Seguro que deseas eliminar a <strong>{{ b.nombre }}</strong>?<br>
+        Esta acción también eliminará todos los avances y evidencias asociadas.</p>
+</div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <a href="{% url 'beneficiarios:eliminar_beneficiario' b.id %}" class="btn btn-danger">Eliminar definitivamente</a>
+    </div>
+    </div>
+</div>
+</div>
+{% endfor %}
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <small class="text-muted">Gestión de Beneficiarios © 2025</small>
+    </footer>
+
+</div>
+</body>
+</html>
